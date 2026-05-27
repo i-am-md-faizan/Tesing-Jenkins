@@ -22,7 +22,10 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'python3 test.py'
+                sh '''
+		cd python-ci-project
+		python3 test.py
+		'''
             }
         }
     }
