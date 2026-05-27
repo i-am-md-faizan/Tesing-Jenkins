@@ -1,1 +1,62 @@
+pipeline {
+    agent any
 
+    environment {
+        DEPLOY_DIR = "/opt/python-app"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo "Cloning code..."
+            }
+        }
+
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+		cd python-cicd
+		python3 test.py
+		'''
+            }
+        }
+	stage('Run python') {
+	    steps {
+		sh '''
+		cd python-cicd
+		python3 app.py
+		'''
+	    }
+	}
+
+        stage('Build Artifact') {
+            steps {
+                sh 'mkdir -p build'
+                sh 'cp app.py build/'
+                sh 'cp test_app.py build/'
+                echo "Build created"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    sudo mkdir -p $DEPLOY_DIR
+                    sudo cp -r build/* $DEPLOY_DIR/
+                    echo "Deployed to $DEPLOY_DIR"
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "CI/CD SUCCESS 🚀"
+        }
+        failure {
+            echo "CI/CD FAILED ❌"
+        }
+    }
+}
