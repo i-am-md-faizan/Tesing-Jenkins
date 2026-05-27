@@ -13,7 +13,10 @@ pipeline {
 
         stage('Run App') {
             steps {
-                sh 'python3 app.py'
+                sh '''
+		cd python-ci-project
+		python3 app.py
+		'''
             }
         }
 
