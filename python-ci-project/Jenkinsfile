@@ -1,0 +1,42 @@
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                echo "Cloning repository..."
+            }
+        }
+
+
+        stage('Run App') {
+            steps {
+                sh '''
+		cd python-ci-project
+		python3 app.py
+		'''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+		cd python-ci-project
+		python3 test.py
+		'''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline SUCCESS 🚀"
+        }
+        failure {
+            echo "Pipeline FAILED ❌"
+        }
+    }
+}
+
